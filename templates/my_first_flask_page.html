@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Weed Spread Homework</title>
+        <!-- This is run Chart.js version 2.9.3.   -->
+        <!-- This loads Chart.js.                  -->
+        <!-- The integrity is a check-sum          -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"
+                integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg=="
+                crossorigin="anonymous">
+        </script>
+    </head>
+    <body>
+    <center>
+        <H2>Simulating Weed Spread Homework</H2>
+        <h3>By Navid Nafiuzzaman, Vincent Li, Karl Coelho</h3>
+        <P>
+        <!-- The page that is used here, MUST match the name in the *.py file. -->
+        <!-- This is passed a few parameters: ... see the *.html file... -->
+        <form method="POST" action="/my_page_name">
+            <!-- <p>Original Y values = {{values}}</p>
+            <p>New Y values(Adding {{y}} to original) = {{newValues}}</p> -->
+            <!-- ############################################################### -->
+            <!--                                                                 -->
+            <!-- This defines the slider, and gives it the name "y_slider".      -->
+            <!-- If you change the slider (i.e. oninput) change the textbox next to it too. -->
+            <p>Viral Reproduction Factor:<input type="range" name="y_slider" min="0" max="2" 
+                                                          value="{{y}}"
+                                                          step="0.05" oninput="this.form.yInput.value=this.value" />
+
+                <!-- This renders the input text box. -->
+                <!-- If the input changes here, also change the slider bar.  -->
+                <input type="number" name="yInput" min="0" max="10" value={{y}} step="0.05"
+                       oninput="this.form.y_slider.value=this.value" />
+            </p>
+
+            <!-- This is the submission button  -->
+            <input type="submit" value="Re-calculate" />
+        </form>
+    </center>
+</body>
+
+
+    <!-- This is the associated javascript.  -->
+    <!-- A Canvas is used as a place to put the graph... -->
+    <!-- Canvases go with Scalar Vector Graphics (SVG)   -->
+    <center>
+    
+        <!-- This also allocates a canvas to draw on: -->
+        <!-- NOTE -- THE CANVAS IS NAMED "weedSpreadChart"  -->
+    
+        <div>
+            <canvas id="weedSpreadChart" width="800" height="600"></canvas>
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <a href="https://github.com">View this project on Github</a>
+    </center>
+    
+    <script>
+    
+        <!-- THIS IS THE START OF THE CHART.JS STUFF.... -->
+        <!-- Do not let the chart use the window size.  Turn off the auto-resizing. -->
+        Chart.defaults.global.responsive = false;
+    
+        <!-- This sets all the parameters and data into one structure.
+        <!--     The most important things here are:                                -->
+        <!--     1.  labels are the X axis.                                        -->
+        <!--     2.  data is the Y axis.                                        -->
+        <!--     3.  Title of the graph is called "label".                            -->
+        <!--     4.  Y-Axis is named "Count",                                        -->
+        <!--     5.  Y-Axis is named 'Number of Days'                            -->
+        <!--     Everything else is a decoration.                                -->
+        <!--                                                                              -->
+        <!--     This variable is like a dictionary that contains everything    -->
+        <!--     you want when you create the line chart later.                        -->
+        var weed_spread_data = {
+          <!-- This copies the given X-Axis labels to the graph. -->
+          labels :[  {% for specific_item in values %}
+                        {{specific_item}},
+                     {% endfor %} ],
+          datasets: [ {
+            fill: false,
+            label: "Rate of Infection Spread at {{y}} C0",
+            lineTension: 0.1,
+            backgroundColor: "rgba(255,0,0,0.4)",
+            borderColor: "rgba(255,0,0,1)",
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: "rgba(255,0,0,1)",
+            pointBackgroundColor: "#fff",
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor:  "rgba(255,0,0,1)",
+            pointHoverBorderColor:      "rgba(220,220,220,1)",
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data :[{% for item in newValues %}
+                    {{item}},
+                    {% endfor %}],
+          }]
+        };
+    
+        // get chart canvas from the DOM using the string identifier:
+        var ctx = document.getElementById("weedSpreadChart").getContext("2d");
+    
+        // create the chart using the chart canvas
+        // This creates a new instance of the chart.
+        // We create it as a 'line' chart,
+        // and we give it the data that is weed_spread_data.  <<=== WE CREATED THIS ABOVE.
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: weed_spread_data,
+          options : {
+          scales: {
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of Weeds'
+              }
+            }],
+            xAxes: [ {
+              scaleLabel: {
+                display: true,
+                labelString: 'Number of Days'
+              }
+            } ],
+          }
+        }
+        });
+    </script>
+
+</html>
+
